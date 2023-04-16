@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notifications'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -11,6 +12,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [pingMsg, setPingMsg] = useState({ message: null, state: null })
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -42,8 +44,9 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      notificationChange('Login successful', 'success')
     } catch (exception) {
-      console.log(exception)
+      notificationChange('Wrong username or password', 'error')
     }
   }
 
@@ -66,12 +69,19 @@ const App = () => {
     setTitle('')
     setAuthor('')
     setUrl('')
+    notificationChange(`${blogObject.title} by ${blogObject.author} added`, 'success')
+  }
+
+  const notificationChange = (newMessage, newState) => {
+    setPingMsg({ message: newMessage, state: newState })
+    setTimeout(() => setPingMsg({ message: null, state: null }), 5000)
   }
 
   if (user === null) {
     return (
       <div>
         <h2>Log in to application</h2>
+        <Notification message={pingMsg.message} state={pingMsg.state} />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -100,6 +110,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification message={pingMsg.message} state={pingMsg.state} />
       <p>
         {user.name} logged in
         <button onClick={handleLogout}>logout</button>
