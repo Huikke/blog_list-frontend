@@ -4,15 +4,13 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notifications'
 import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [pingMsg, setPingMsg] = useState({ message: null, state: null })
 
   useEffect(() => {
@@ -58,21 +56,11 @@ const App = () => {
     setUser(null)
   }
   
-  const addBlog = async event => {
-    event.preventDefault()
-    const blogObject = {
-      title: title,
-      author: author,
-      url: url,
-      likes: 0
-    }
-
-    blogFormRef.current.toggleVisibility()
+  const addBlog = async (blogObject) => {
     const returnedBlog = await blogService.create(blogObject)
     setBlogs(blogs.concat(returnedBlog))
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+
+    blogFormRef.current.toggleVisibility()
     notificationChange(`${blogObject.title} by ${blogObject.author} added`, 'success')
   }
 
@@ -121,33 +109,7 @@ const App = () => {
       </p>
 
       <Togglable buttonLabel='create new' ref={blogFormRef}>
-        <h2>create new</h2>
-        <form onSubmit={addBlog}>
-          <div>
-            title:
-            <input
-              value={title}
-              onChange={({ target }) => setTitle(target.value)}
-            />
-          </div>
-          <div>
-            author:
-            <input
-              value={author}
-              onChange={({ target }) => setAuthor(target.value)}
-            />
-          </div>
-          <div>
-            url:
-            <input
-              value={url}
-              onChange={({ target }) => setUrl(target.value)}
-            />
-          </div>
-          <div>
-            <button type="submit">create</button>
-          </div>
-        </form>
+        <BlogForm createBlog={addBlog} />
       </Togglable>
 
       {blogs.map(blog =>
