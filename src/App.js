@@ -69,6 +69,13 @@ const App = () => {
     setTimeout(() => setPingMsg({ message: null, state: null }), 5000)
   }
 
+  const addLike = async (id) => {
+    const blog = blogs.find(n => n.id === id)
+    const blogLikesUpdated = { ...blog, likes: blog.likes + 1 }
+    const response = await blogService.update(id, blogLikesUpdated)
+    setBlogs(blogs.map(n => n.id !== id ? n : response.data))
+  }
+
   if (user === null) {
     return (
       <div>
@@ -113,7 +120,7 @@ const App = () => {
       </Togglable>
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} addLike={addLike} />
       )}
     </div>
   )
