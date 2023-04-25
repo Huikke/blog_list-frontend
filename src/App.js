@@ -69,11 +69,18 @@ const App = () => {
     setTimeout(() => setPingMsg({ message: null, state: null }), 5000)
   }
 
-  const addLike = async (id) => {
-    const blog = blogs.find(n => n.id === id)
+  const addLike = async id => {
+    const blog = blogs.find(b => b.id === id)
     const blogLikesUpdated = { ...blog, likes: blog.likes + 1 }
     const response = await blogService.update(id, blogLikesUpdated)
-    setBlogs(blogs.map(n => n.id !== id ? n : response.data))
+    setBlogs(blogs.map(b => b.id !== id ? b : response.data))
+  }
+
+  const deleteBlog = blog => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      blogService.remove(blog.id)
+      setBlogs(blogs.filter(b => b.id !== blog.id))
+    }
   }
 
   if (user === null) {
@@ -120,7 +127,7 @@ const App = () => {
       </Togglable>
 
       {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} addLike={addLike} />
+        <Blog key={blog.id} blog={blog} addLike={addLike} user={user} deleteBlog={deleteBlog} />
       )}
     </div>
   )
