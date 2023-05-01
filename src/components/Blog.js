@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 const Blog = ({ blog, addLike, user, deleteBlog }) => {
   const isOwner = user.username === blog.user.username
 
@@ -9,5 +11,14 @@ const Blog = ({ blog, addLike, user, deleteBlog }) => {
     </div>
   )
 }
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  addLike: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+  deleteBlog: PropTypes.func.isRequired
+}
+
+Blog.displayName = 'Blog'
 
 export default Blog
