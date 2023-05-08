@@ -14,9 +14,9 @@ const Blog = ({ blog, addLike, user, deleteBlog }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  addLike: PropTypes.func.isRequired,
+  addLike: PropTypes.func,
   user: PropTypes.object.isRequired,
-  deleteBlog: PropTypes.func.isRequired
+  deleteBlog: PropTypes.func
 }
 
 Blog.displayName = 'Blog'
